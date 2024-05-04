@@ -10,21 +10,35 @@
 #include "semphr.h"
 #include "portmacro.h"
 
-
 int check_first_switch()
 {
-    int K;
-    // Read the current state of pin PF4
-    if ((0b00010000) & (GPIO_PORTF_DATA_R))
-    {
-        K = 1;
-        return K;
+    static int previousState = 1;
+    int currentState;
 
+    currentState = (GPIO_PORTF_DATA_R & 0x10) ? 1 : 0;
+
+    if (previousState == 0 && currentState == 1) {
+        previousState = currentState;
+        return 0;
+    } else {
+        previousState = currentState;
+        return 1;
     }
-    else
-    {
-        K = 0;
-        return K;
+}
+
+int check_second_switch()
+{
+    static int previousState = 1;
+    int currentState;
+
+    currentState = (GPIO_PORTF_DATA_R & 0x01) ? 1 : 0;
+
+    if (previousState == 0 && currentState == 1) {
+        previousState = currentState;
+        return 0;
+    } else {
+        previousState = currentState;
+        return 1;
     }
 }
 
