@@ -11,6 +11,8 @@
 #include "systick_frt.h"
 #include "rotary.h"
 #include "keypad.h"
+#include "ATM.h"
+#include "userSwitch.h"
 
 #define USERTASK_STACK_SIZE configMINIMAL_STACK_SIZE
 #define IDLE_PRIO 0
@@ -60,7 +62,7 @@ int main(void) {
     xTaskCreate(rotary_task, "rotary", configMINIMAL_STACK_SIZE, NULL, LOW_PRIO, NULL);
     xTaskCreate(key_task, "keyboard", configMINIMAL_STACK_SIZE, NULL, LOW_PRIO, NULL);
     xTaskCreate(lcd_task, "LCDTask", configMINIMAL_STACK_SIZE, NULL, LOW_PRIO, NULL); // Add LCD task
-
+    xTaskCreate(ATM_task, "ATM", configMINIMAL_STACK_SIZE, NULL, LOW_PRIO, NULL);
     // Start the FreeRTOS scheduler
     vTaskStartScheduler();
 
@@ -68,7 +70,6 @@ int main(void) {
 
     return 0;
 }
-
 
 
 
