@@ -43,7 +43,7 @@ void wr_str_LCD( INT8U *pStr );
 void clr_LCD();
 void home_LCD();
 void move_LCD( INT8U x, INT8U y );
-
+void Set_cursor( INT8U Ch );
 void lcd_task(void *pvParameters);
 /*****************************************************************************
 *   Input    : -
@@ -54,4 +54,3 @@ void lcd_task(void *pvParameters);
 
 /****************************** End Of Module *******************************/
 #endif
-
