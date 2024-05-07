@@ -30,6 +30,11 @@ SemaphoreHandle_t xSemaphore_keypad;
 QueueHandle_t xQueue_ATM;
 SemaphoreHandle_t xSemaphore_ATM;
 
+QueueHandle_t xQueue_button;
+SemaphoreHandle_t xSemaphore_button;
+
+
+
 
 static void setupHardware(void)
 /*****************************************************************************
@@ -47,11 +52,15 @@ static void setupHardware(void)
   //init_led();
   xQueue_lcd = xQueueCreate(QUEUE_LEN, sizeof(INT8U));
   xQueue_keypad = xQueueCreate(QUEUE_LEN, sizeof(INT8U));
+  xQueue_button = xQueueCreate(QUEUE_LEN, sizeof(INT8U));
   xQueue_ATM = xQueueCreate(QUEUE_LEN, sizeof(INT16U));
 
   xSemaphore_lcd = xSemaphoreCreateMutex();
   xSemaphore_keypad = xSemaphoreCreateMutex();
+  xSemaphore_button = xSemaphoreCreateMutex();
   xSemaphore_ATM = xSemaphoreCreateMutex();
+
+
 
 }
 
@@ -63,6 +72,8 @@ int main(void) {
     xTaskCreate(key_task, "keyboard", configMINIMAL_STACK_SIZE, NULL, LOW_PRIO, NULL);
     xTaskCreate(lcd_task, "LCDTask", configMINIMAL_STACK_SIZE, NULL, LOW_PRIO, NULL); // Add LCD task
     xTaskCreate(ATM_task, "ATM", configMINIMAL_STACK_SIZE, NULL, LOW_PRIO, NULL);
+    xTaskCreate(button_task, "button", configMINIMAL_STACK_SIZE, NULL, LOW_PRIO, NULL);
+
     // Start the FreeRTOS scheduler
     vTaskStartScheduler();
 
@@ -70,6 +81,8 @@ int main(void) {
 
     return 0;
 }
+
+
 
 
 
