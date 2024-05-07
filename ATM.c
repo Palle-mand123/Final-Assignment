@@ -149,14 +149,14 @@ void ATM_task(void *pvParameters)
 
             break;
         case CHECK_PIN:
-            if ((Pin % 8) == 0)
+            if ((Pin % 8) == 0 && Pin != 0)
             {
                 set_ATM_state(WITHDRAWAL_AMOUNTS);
             }
             else
             {
                 wr_str_LCD("Wrong Pin-Code");
-                vTaskDelay(1000);
+                vTaskDelay(1000 / portTICK_PERIOD_MS);
                 clr_LCD();
                 vTaskDelay(10);
                 set_ATM_state(PIN_CODE);
@@ -211,7 +211,24 @@ void ATM_task(void *pvParameters)
                     if (buttonEvent == 0x03)
                     {
                         WithdrawAmount = WithdrawAmount + 0x1F4;
-                        buttonEvent = 0x00;
+                        if (WithdrawAmount < Saldo)
+                        {
+                            set_ATM_state(WITHDRAWAL_OPTIONS);
+                            buttonEvent = 0x00;
+                        }
+                        else
+                        {
+                            clr_LCD();
+                            vTaskDelay(250 / portTICK_PERIOD_MS);
+                            wr_str_LCD("Not enough saldo!");
+                            vTaskDelay(1000 / portTICK_PERIOD_MS);
+                            clr_LCD();
+                            vTaskDelay(300 / portTICK_PERIOD_MS);
+                            WithdrawAmount = 0x00;
+                            buttonEvent = 0x00;
+                            set_ATM_state(CHECK_PIN);
+                        }
+
                     }
                 }
 
@@ -241,7 +258,23 @@ void ATM_task(void *pvParameters)
                     if (buttonEvent == 0x03)
                     {
                         WithdrawAmount = WithdrawAmount + 0xc8;
-                        buttonEvent = 0x00;
+                        if (WithdrawAmount < Saldo)
+                        {
+                            set_ATM_state(WITHDRAWAL_OPTIONS);
+                            buttonEvent = 0x00;
+                        }
+                        else
+                        {
+                            clr_LCD();
+                            vTaskDelay(250 / portTICK_PERIOD_MS);
+                            wr_str_LCD("Not enough saldo!");
+                            vTaskDelay(1000 / portTICK_PERIOD_MS);
+                            clr_LCD();
+                            vTaskDelay(300 / portTICK_PERIOD_MS);
+                            WithdrawAmount = 0x00;
+                            buttonEvent = 0x00;
+                            set_ATM_state(CHECK_PIN);
+                        }
                     }
                 }
 
@@ -269,7 +302,23 @@ void ATM_task(void *pvParameters)
                     if (buttonEvent == 0x03)
                     {
                         WithdrawAmount = WithdrawAmount + 0x64;
-                        buttonEvent = 0x00;
+                        if (WithdrawAmount < Saldo)
+                        {
+                            set_ATM_state(WITHDRAWAL_OPTIONS);
+                            buttonEvent = 0x00;
+                        }
+                        else
+                        {
+                            clr_LCD();
+                            vTaskDelay(250 / portTICK_PERIOD_MS);
+                            wr_str_LCD("Not enough saldo!");
+                            vTaskDelay(1000 / portTICK_PERIOD_MS);
+                            clr_LCD();
+                            vTaskDelay(300 / portTICK_PERIOD_MS);
+                            WithdrawAmount = 0x00;
+                            buttonEvent = 0x00;
+                            set_ATM_state(CHECK_PIN);
+                        }
                     }
                 }
 
@@ -291,17 +340,39 @@ void ATM_task(void *pvParameters)
                     if (buttonEvent == 0x03)
                     {
                         WithdrawAmount = WithdrawAmount + 0x32;
-                        buttonEvent = 0x00;
+                        if (WithdrawAmount < Saldo)
+                        {
+                            set_ATM_state(WITHDRAWAL_OPTIONS);
+                            buttonEvent = 0x00;
+                        }
+                        else
+                        {
+                            clr_LCD();
+                            vTaskDelay(250 / portTICK_PERIOD_MS);
+                            wr_str_LCD("Not enough saldo!");
+                            vTaskDelay(1000 / portTICK_PERIOD_MS);
+                            clr_LCD();
+                            vTaskDelay(300 / portTICK_PERIOD_MS);
+                            WithdrawAmount = 0x00;
+                            buttonEvent = 0x00;
+                            set_ATM_state(CHECK_PIN);
+                        }
                     }
                 }
-                vTaskDelay(10);
-                Set_cursor(0x80 + 11);
-                send_amount(WithdrawAmount);
-                vTaskDelay(10);
-                home_LCD();
             }
             break;
         case WITHDRAWAL_OPTIONS:
+            vTaskDelay(250 / portTICK_PERIOD_MS);
+            clr_LCD();
+            while(ATM_state == WITHDRAWAL_OPTIONS)
+            {
+                vTaskDelay(250 / portTICK_PERIOD_MS);
+                home_LCD();
+                vTaskDelay(250 / portTICK_PERIOD_MS);
+                send_amount(WithdrawAmount);
+            }
+
+
             break;
         case PRINT:
             break;
