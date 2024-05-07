@@ -10,8 +10,8 @@
 
 
 
-int check_first_switch();
-int check_second_switch();
+
+void button_task(void *pvParameters);
 
 
 
